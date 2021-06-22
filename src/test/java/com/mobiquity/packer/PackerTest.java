@@ -28,7 +28,7 @@ class PackerTest {
     Item item1 = new Item().parse("1,53.38,€45");
     Item item2 = new Item().parse("2,88.62,€98");
     indexToItem.put(item1.getIndex(), item1);
-    indexToItem.put(item2.getIndex(), item1);
+    indexToItem.put(item2.getIndex(), item2);
     expectedPackage.setIndexToItem(indexToItem);
     assertEquals(expectedPackage, parsedPackage);
   }
