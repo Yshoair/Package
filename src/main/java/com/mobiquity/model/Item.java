@@ -16,6 +16,18 @@ public class Item {
   }
 
   public Item parse(String txt) {
+    String[] params = txt.split(",");
+    index = Integer.parseInt(params[0]);
+    weight = Double.parseDouble(params[1]);
+    cost = Integer.parseInt(params[2].substring(1));
     return this;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Item item = (Item) o;
+    return index == item.index && Double.compare(item.weight, weight) == 0 && cost == item.cost;
   }
 }
