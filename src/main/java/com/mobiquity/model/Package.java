@@ -1,40 +1,50 @@
 package com.mobiquity.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Package {
-  Map<Integer, Item> indexToItem;
-  double capacity;
+  List<Item> items;
+  int capacity;
 
-  public Map<Integer, Item> getIndexToItem() {
-    return indexToItem;
+  public List<Item> getItems() {
+    return items;
   }
 
-  public void setIndexToItem(Map<Integer, Item> indexToItem) {
-    this.indexToItem = indexToItem;
+  public void setItems(List<Item> items) {
+    this.items = items;
   }
 
-  public double getCapacity() {
+  public int getCapacity() {
     return capacity;
   }
 
-  public void setCapacity(double capacity) {
+  public void setCapacity(int capacity) {
     this.capacity = capacity;
   }
 
   public Package parse(String packageTxt) {
-    capacity = Double.parseDouble(packageTxt.substring(0, packageTxt.indexOf(":")).trim());
-    indexToItem = new HashMap<>();
+    capacity = Integer.parseInt(packageTxt.substring(0, packageTxt.indexOf(":")).trim());
+    items = new ArrayList<>();
     String parenthesesGroupRegex = "\\(([^)]+)\\)";
     Matcher m = Pattern.compile(parenthesesGroupRegex).matcher(packageTxt);
     while (m.find()) {
       Item item = new Item().parse(m.group(1));
-      indexToItem.put(item.getIndex(), item);
+      items.add(item);
     }
     return this;
+  }
+
+  public void sortItemsByLowestWeight() {
+    this.items.sort(Comparator.comparing(Item::getWeight));
+  }
+
+  public void sortItemsByIndex() {
+    this.items.sort(Comparator.comparing(Item::getIndex));
   }
 
   @Override
@@ -42,7 +52,7 @@ public class Package {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Package aPackage = (Package) o;
-    return Double.compare(aPackage.capacity, capacity) == 0
-        && indexToItem.equals(aPackage.indexToItem);
+    return capacity == aPackage.capacity && Objects.equals(items, aPackage.items);
   }
+
 }
