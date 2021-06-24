@@ -1,5 +1,6 @@
 package com.mobiquity.packer;
 
+import com.mobiquity.exception.APIException;
 import com.mobiquity.infrastructure.PackageReader;
 import com.mobiquity.model.Item;
 import com.mobiquity.model.Package;
@@ -42,12 +43,10 @@ class PackerTest {
         "56 : (1,90.72,€13) (2,33.80,€40) (3,43.15,€10) (4,37.97,€16) (5,46.81,€36)\n"
             + " (6,48.77,€79) (7,81.80,€45) (8,19.36,€79) (9,6.76,€64)";
     Package p = new Package().parse(inputPackage);
-    p.getItems().sort(Comparator.comparing(Item::getWeight));
     PackContext packingContext = new PackContext();
     IPackStrategy packStrategy = new DynamicProgrammingBottomUpPackStrategy();
     packingContext.setPackStrategy(packStrategy);
-    p =packingContext.executePackStrategy(p);
-    p.getItems().sort(Comparator.comparing(Item::getIndex));
+    p = packingContext.executePackStrategy(p);
     StringBuilder packedItems = new StringBuilder();
     for (Item item : p.getItems()) packedItems.append(item.getIndex()).append(",");
     if (packedItems.length() > 0) packedItems.deleteCharAt(packedItems.length() - 1);
@@ -61,13 +60,22 @@ class PackerTest {
     PackageReader packageReader = new PackageReader();
     List<Package> packages = packageReader.fetchPackagesFromFile(fileAbsolutePath);
     List<Package> expectedPackages = new ArrayList<>();
-    String inputP1 = "81 : (1,53.38,€45) (2,88.62,€98) (3,78.48,€3) (4,72.30,€76) (5,30.18,€9)\n" +
-            "(6,46.34,€48)";
+    String inputP1 =
+        "81 : (1,53.38,€45) (2,88.62,€98) (3,78.48,€3) (4,72.30,€76) (5,30.18,€9)\n"
+            + "(6,46.34,€48)";
     String inputP2 = "8 : (1,15.3,€34)";
     Package p1 = new Package().parse(inputP1);
     Package p2 = new Package().parse(inputP2);
     expectedPackages.add(p1);
     expectedPackages.add(p2);
     assertEquals(expectedPackages, packages);
+  }
+
+  @Test
+  void packer_Test() throws APIException {
+    String fileAbsolutePath = "D:\\WorkSpace\\Projects\\Mobiquity\\example_input";
+    String output = Packer.pack(fileAbsolutePath);
+    String expected = "4\n" + "-\n" + "2,7\n" + "8,9";
+    assertEquals(expected, output);
   }
 }

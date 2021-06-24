@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Package {
   List<Item> items;
@@ -45,6 +46,14 @@ public class Package {
 
   public void sortItemsByIndex() {
     this.items.sort(Comparator.comparing(Item::getIndex));
+  }
+
+  public String getItemsIndexToString() {
+    String packedItems =
+        items.stream()
+            .map(item -> String.valueOf(item.getIndex()))
+            .collect(Collectors.joining(","));
+    return packedItems.length() > 0 ? packedItems : "-";
   }
 
   @Override

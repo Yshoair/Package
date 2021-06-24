@@ -1,13 +1,34 @@
 package com.mobiquity.packer;
 
 import com.mobiquity.exception.APIException;
+import com.mobiquity.infrastructure.PackageReader;
+import com.mobiquity.model.Package;
+import com.mobiquity.strategy.DynamicProgrammingBottomUpPackStrategy;
+import com.mobiquity.strategy.PackContext;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Packer {
 
+  private static Packer packer;
+  private final PackageReader packageReader;
+  private final PackContext packContext;
+
   private Packer() {
+    packageReader = new PackageReader();
+    packContext = new PackContext();
+  }
+
+  private static synchronized void getPackerInstance() {
+    if (packer == null) packer = new Packer();
   }
 
   public static String pack(String filePath) throws APIException {
-    return null;
+    getPackerInstance();
+    List<Package> packages = packer.packageReader.fetchPackagesFromFile(filePath);
+    packer.packContext.setPackStrategy(new DynamicProgrammingBottomUpPackStrategy());
+    packages.forEach(p -> packer.packContext.executePackStrategy(p));
+    return packages.stream().map(Package::getItemsIndexToString).collect(Collectors.joining("\n"));
   }
 }
