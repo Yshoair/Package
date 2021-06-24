@@ -57,7 +57,7 @@ class PackerTest {
 
   @Test
   void fetchPackagesFromFile_Test() {
-    String fileAbsolutePath = "D:\\WorkSpace\\Projects\\Mobiquity\\example_input.txt";
+    String fileAbsolutePath = "D:\\WorkSpace\\Projects\\Mobiquity\\example_input";
     PackageReader packageReader = new PackageReader();
     List<Package> packages = packageReader.fetchPackagesFromFile(fileAbsolutePath);
     List<Package> expectedPackages = new ArrayList<>();
