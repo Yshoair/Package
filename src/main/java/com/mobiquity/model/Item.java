@@ -1,6 +1,11 @@
 package com.mobiquity.model;
 
+import com.mobiquity.exception.APIException;
+
 public class Item {
+  private final int MAX_WEIGHT = 100;
+  private final int MAX_COST = 100;
+  private final int MAX_INDEX = 15;
   private int index;
   private double weight;
   private int cost;
@@ -37,12 +42,27 @@ public class Item {
     this.cost = cost;
   }
 
-  public Item parse(String txt) {
+  public Item parse(String txt) throws APIException {
     String[] params = txt.split(",");
-    index = Integer.parseInt(params[0].trim());
-    weight = Double.parseDouble(params[1].trim());
-    cost = Integer.parseInt(params[2].substring(1).trim());
+    try {
+      index = Integer.parseInt(params[0].trim());
+      weight = Double.parseDouble(params[1].trim());
+      cost = Integer.parseInt(params[2].substring(1).trim());
+    } catch (NumberFormatException | IndexOutOfBoundsException e) {
+      e.printStackTrace();
+      throw new APIException("Invalid Input item format");
+    }
+    validateConstraints();
     return this;
+  }
+
+  private void validateConstraints() throws APIException {
+    if (weight > MAX_WEIGHT)
+      throw new APIException("Input item weight shouldn't exceed: " + MAX_WEIGHT);
+    if (cost > MAX_COST)
+      throw new APIException("Input item cost shouldn't exceed: " + MAX_COST);
+    if (index > MAX_INDEX)
+      throw new APIException("Input item index shouldn't exceed: " + MAX_INDEX);
   }
 
   @Override
