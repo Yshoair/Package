@@ -1,5 +1,6 @@
 package com.mobiquity.packer;
 
+import com.mobiquity.infrastructure.PackageReader;
 import com.mobiquity.model.Item;
 import com.mobiquity.model.Package;
 import com.mobiquity.strategy.DynamicProgrammingBottomUpPackStrategy;
@@ -52,5 +53,21 @@ class PackerTest {
     if (packedItems.length() > 0) packedItems.deleteCharAt(packedItems.length() - 1);
     else packedItems.append("-");
     assertEquals("8,9", packedItems.toString());
+  }
+
+  @Test
+  void fetchPackagesFromFile_Test() {
+    String fileAbsolutePath = "D:\\WorkSpace\\Projects\\Mobiquity\\example_input.txt";
+    PackageReader packageReader = new PackageReader();
+    List<Package> packages = packageReader.fetchPackagesFromFile(fileAbsolutePath);
+    List<Package> expectedPackages = new ArrayList<>();
+    String inputP1 = "81 : (1,53.38,€45) (2,88.62,€98) (3,78.48,€3) (4,72.30,€76) (5,30.18,€9)\n" +
+            "(6,46.34,€48)";
+    String inputP2 = "8 : (1,15.3,€34)";
+    Package p1 = new Package().parse(inputP1);
+    Package p2 = new Package().parse(inputP2);
+    expectedPackages.add(p1);
+    expectedPackages.add(p2);
+    assertEquals(expectedPackages, packages);
   }
 }
