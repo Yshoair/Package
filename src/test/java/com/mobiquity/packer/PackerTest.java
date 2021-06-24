@@ -55,7 +55,7 @@ class PackerTest {
   }
 
   @Test
-  void fetchPackagesFromFile_Test() {
+  void fetchPackagesFromFile_Test() throws APIException {
     String fileAbsolutePath = "D:\\WorkSpace\\Projects\\Mobiquity\\example_input";
     PackageReader packageReader = new PackageReader();
     List<Package> packages = packageReader.fetchPackagesFromFile(fileAbsolutePath);
@@ -77,5 +77,19 @@ class PackerTest {
     String output = Packer.pack(fileAbsolutePath);
     String expected = "4\n" + "-\n" + "2,7\n" + "8,9";
     assertEquals(expected, output);
+  }
+
+  @Test
+  void whenInvalidInputFileThenThrowAPIException() {
+    String fileAbsolutePath = "D:\\WorkSpace\\Projects\\Mobiquity\\example";
+    PackageReader packageReader = new PackageReader();
+    assertThrows(APIException.class, () -> packageReader.fetchPackagesFromFile(fileAbsolutePath));
+  }
+
+  @Test
+  void whenInvalidDataInFileThenThrowAPIException() {
+    String fileAbsolutePath = "D:\\WorkSpace\\Projects\\Mobiquity\\example_input";
+    PackageReader packageReader = new PackageReader();
+    assertThrows(APIException.class, () -> packageReader.fetchPackagesFromFile(fileAbsolutePath));
   }
 }
