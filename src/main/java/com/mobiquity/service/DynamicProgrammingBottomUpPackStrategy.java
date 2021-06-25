@@ -65,8 +65,10 @@ public class DynamicProgrammingBottomUpPackStrategy implements IPackStrategy {
 
   /**
    * Backtracks the built 2D array to fetch the selected items by navigating the array from the last
-   * index point with the highest value and capacity to the lowest point in the grid
-   *
+   * index point with the highest value and capacity to the lowest point
+   * compares total values with row before it if they don't match that means the current item
+   * will be taken so we fetch it and subtract its value and capacity moving to the next cell
+   * till we hit a base case
    * @param p Package to be organised with highest cost lowest weight items
    */
   private void backtrackSelectedItems(Package p) {
