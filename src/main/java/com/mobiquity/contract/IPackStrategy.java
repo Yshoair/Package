@@ -1,4 +1,4 @@
-package com.mobiquity.strategy;
+package com.mobiquity.contract;
 
 import com.mobiquity.model.Package;
 

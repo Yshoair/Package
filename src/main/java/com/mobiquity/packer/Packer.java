@@ -3,8 +3,8 @@ package com.mobiquity.packer;
 import com.mobiquity.exception.APIException;
 import com.mobiquity.infrastructure.PackageReader;
 import com.mobiquity.model.Package;
-import com.mobiquity.strategy.DynamicProgrammingBottomUpPackStrategy;
-import com.mobiquity.strategy.PackContext;
+import com.mobiquity.service.DynamicProgrammingBottomUpPackStrategy;
+import com.mobiquity.service.PackContext;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +29,6 @@ public class Packer {
     List<Package> packages = packer.packageReader.fetchPackagesFromFile(filePath);
     packer.packContext.setPackStrategy(new DynamicProgrammingBottomUpPackStrategy());
     packages.forEach(p -> packer.packContext.executePackStrategy(p));
-    return packages.stream().map(Package::getItemsIndexToString).collect(Collectors.joining("\n"));
+    return packages.stream().map(Package::itemsIndexToString).collect(Collectors.joining("\n"));
   }
 }

@@ -1,65 +1,16 @@
 package com.mobiquity.packer;
 
 import com.mobiquity.exception.APIException;
-import com.mobiquity.infrastructure.PackageReader;
 import com.mobiquity.model.Item;
 import com.mobiquity.model.Package;
-import com.mobiquity.strategy.DynamicProgrammingBottomUpPackStrategy;
-import com.mobiquity.strategy.IPackStrategy;
-import com.mobiquity.strategy.PackContext;
+import com.mobiquity.service.DynamicProgrammingBottomUpPackStrategy;
+import com.mobiquity.contract.IPackStrategy;
+import com.mobiquity.service.PackContext;
 import org.junit.jupiter.api.Test;
-
-import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PackerTest {
-  @Test
-  void parseItem_test() throws APIException {
-    String itemTxt = "1,53.38,€45";
-    Item parsedItem = new Item().parse(itemTxt);
-    Item expectedItem = new Item(1, 53.38, 45);
-    assertEquals(expectedItem, parsedItem);
-  }
-
-  @Test
-  void parseItemViolatesIndexConstraintThrowsApiException_test() throws APIException {
-    String itemTxt = "20,53.38,€45";
-    assertThrows(APIException.class, () -> new Item().parse(itemTxt));
-  }
-
-  @Test
-  void parseItemViolatesWeightConstraintThrowsApiException_test() throws APIException {
-    String itemTxt = "1,101,€45";
-    assertThrows(APIException.class, () -> new Item().parse(itemTxt));
-  }
-
-  @Test
-  void parseItemViolatesCostConstraintThrowsApiException_test() throws APIException {
-    String itemTxt = "20,53.38,€102";
-    assertThrows(APIException.class, () -> new Item().parse(itemTxt));
-  }
-
-  @Test
-  void parsePackage_test() throws APIException {
-    String packageTxt = "81 : (1,53.38,€45) (2,88.62,€98)";
-    Package parsedPackage = new Package().parse(packageTxt);
-    Package expectedPackage = new Package();
-    expectedPackage.setCapacity(81);
-    List<Item> items = new ArrayList<>();
-    Item item1 = new Item().parse("1,53.38,€45");
-    Item item2 = new Item().parse("2,88.62,€98");
-    items.add(item1);
-    items.add(item2);
-    expectedPackage.setItems(items);
-    assertEquals(expectedPackage, parsedPackage);
-  }
-
-  @Test
-  void parsePackageViolatesCapacityConstraintThrowsApiException_test() throws APIException {
-    String inputPackage = "101 : (1,53.38,€45) (2,88.62,€98)";
-    assertThrows(APIException.class, () -> new Package().parse(inputPackage));
-  }
 
   @Test
   void packHighestCostItems_test() throws APIException {
@@ -79,55 +30,11 @@ class PackerTest {
   }
 
   @Test
-  void fetchPackagesFromFile_Test() throws APIException {
-    String fileAbsolutePath =
-        "D:\\WorkSpace\\Projects\\Mobiquity\\item-packer\\src\\test\\java\\resources\\example_input";
-    PackageReader packageReader = new PackageReader();
-    List<Package> packages = packageReader.fetchPackagesFromFile(fileAbsolutePath);
-    List<Package> expectedPackages = new ArrayList<>();
-    String inputP1 =
-        "81 : (1,53.38,€45) (2,88.62,€98) (3,78.48,€3) (4,72.30,€76) (5,30.18,€9) "
-            + "(6,46.34,€48)";
-    String inputP2 = "8 : (1,15.3,€34)";
-    String inputP3 =
-        "75 : (1,85.31,€29) (2,14.55,€74) (3,3.98,€16) (4,26.24,€55) "
-            + "(5,63.69,€52) (6,76.25,€75) (7,60.02,€74) (8,93.18,€35) (9,89.95,€78)";
-    String inputP4 =
-        "56 : (1,90.72,€13) (2,33.80,€40) (3,43.15,€10) (4,37.97,€16) (5,46.81,€36) "
-            + "(6,48.77,€79) (7,81.80,€45) (8,19.36,€79) (9,6.76,€64)";
-    Package p1 = new Package().parse(inputP1);
-    Package p2 = new Package().parse(inputP2);
-    Package p3 = new Package().parse(inputP3);
-    Package p4 = new Package().parse(inputP4);
-    expectedPackages.add(p1);
-    expectedPackages.add(p2);
-    expectedPackages.add(p3);
-    expectedPackages.add(p4);
-    assertEquals(expectedPackages, packages);
-  }
-
-  @Test
   void packer_Test() throws APIException {
     String fileAbsolutePath =
         "D:\\WorkSpace\\Projects\\Mobiquity\\item-packer\\src\\test\\java\\resources\\example_input";
     String output = Packer.pack(fileAbsolutePath);
     String expected = "4\n" + "-\n" + "2,7\n" + "8,9";
     assertEquals(expected, output);
-  }
-
-  @Test
-  void whenInvalidInputFileThenThrowAPIException() {
-    String fileAbsolutePath =
-        "D:\\WorkSpace\\Projects\\Mobiquity\\item-packer\\src\\test\\java\\resources\\example";
-    PackageReader packageReader = new PackageReader();
-    assertThrows(APIException.class, () -> packageReader.fetchPackagesFromFile(fileAbsolutePath));
-  }
-
-  @Test
-  void whenInvalidDataInFileThenThrowAPIException() {
-    String fileAbsolutePath =
-        "D:\\WorkSpace\\Projects\\Mobiquity\\item-packer\\src\\test\\java\\resources\\example_invalid_input";
-    PackageReader packageReader = new PackageReader();
-    assertThrows(APIException.class, () -> packageReader.fetchPackagesFromFile(fileAbsolutePath));
   }
 }

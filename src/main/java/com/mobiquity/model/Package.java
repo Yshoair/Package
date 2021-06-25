@@ -32,11 +32,11 @@ public class Package {
     this.capacity = capacity;
   }
 
-  public Package parse(String packageTxt) throws APIException {
-    capacity = Integer.parseInt(packageTxt.substring(0, packageTxt.indexOf(":")).trim());
+  public Package parse(String inputPackage) throws APIException {
+    capacity = Integer.parseInt(inputPackage.substring(0, inputPackage.indexOf(":")).trim());
     items = new ArrayList<>();
     String parenthesesGroupRegex = "\\(([^)]+)\\)";
-    Matcher m = Pattern.compile(parenthesesGroupRegex).matcher(packageTxt);
+    Matcher m = Pattern.compile(parenthesesGroupRegex).matcher(inputPackage);
     while (m.find()) {
       Item item = new Item().parse(m.group(1));
       items.add(item);
@@ -60,7 +60,7 @@ public class Package {
     this.items.sort(Comparator.comparing(Item::getIndex));
   }
 
-  public String getItemsIndexToString() {
+  public String itemsIndexToString() {
     String packedItems =
         items.stream()
             .map(item -> String.valueOf(item.getIndex()))
