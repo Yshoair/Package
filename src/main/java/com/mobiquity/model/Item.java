@@ -2,6 +2,7 @@ package com.mobiquity.model;
 
 import com.mobiquity.exception.APIException;
 
+/** Items fetched from input file are mapped to this model */
 public class Item {
   private final int MAX_WEIGHT = 100;
   private final int MAX_COST = 100;
@@ -42,6 +43,13 @@ public class Item {
     this.cost = cost;
   }
 
+  /**
+   * Parse input item txt to model and return the parsed model
+   *
+   * @param InputItem as text index,weight,cost comma separated
+   * @return Parsed Item model
+   * @throws APIException
+   */
   public Item parse(String InputItem) throws APIException {
     String[] params = InputItem.split(",");
     try {
@@ -56,10 +64,16 @@ public class Item {
     return this;
   }
 
+  /**
+   * Validate Item fixed constraints values against parsed values
+   *
+   * @throws APIException
+   */
   private void validateConstraints() throws APIException {
     if (weight > MAX_WEIGHT)
       throw new APIException("Input item weight shouldn't exceed: " + MAX_WEIGHT);
-    if (cost > MAX_COST) throw new APIException("Input item cost shouldn't exceed: " + MAX_COST);
+    if (cost > MAX_COST)
+      throw new APIException("Input item cost shouldn't exceed: " + MAX_COST);
     if (index > MAX_INDEX)
       throw new APIException("Input item index shouldn't exceed: " + MAX_INDEX);
   }

@@ -7,10 +7,22 @@ import com.mobiquity.model.Package;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Packing Strategy Based on dynamic programming bottom-up algorithm */
 public class DynamicProgrammingBottomUpPackStrategy implements IPackStrategy {
 
+  /**
+   * 2D array to store different Cost states where the rows represent the item and the column
+   * represent the capacity
+   */
   private int[][] states;
 
+  /**
+   * Wrapper function sorts the items by weight ascending to insure lighter weights are picked by
+   * the algorithm in case of equal values and calls builder and backtrack methods.
+   *
+   * @param p Package to be organised with highest cost lowest weight items
+   * @return Package with highest cost items
+   */
   @Override
   public Package pack(Package p) {
     p.sortItemsByLowestWeight();
@@ -20,6 +32,14 @@ public class DynamicProgrammingBottomUpPackStrategy implements IPackStrategy {
     return p;
   }
 
+  /**
+   * Builds the states array in a bottom-up manner starting from the base cases and building up to
+   * the highest possible value according to this formula f[n,c] = max{f[n-1,c], f[n-1,c-Wn] + Vn}
+   * where n is the item index, c is the total capacity W is the weight of the item and V is the
+   * value of the item
+   *
+   * @param p Package to be organised with highest cost lowest weight items
+   */
   private void buildStatesBottomUp(Package p) {
     int itemIndex, capacity;
     int include, exclude;
@@ -43,6 +63,12 @@ public class DynamicProgrammingBottomUpPackStrategy implements IPackStrategy {
     }
   }
 
+  /**
+   * Backtracks the built 2D array to fetch the selected items by navigating the array from the last
+   * index point with the highest value and capacity to the lowest point in the grid
+   *
+   * @param p Package to be organised with highest cost lowest weight items
+   */
   private void backtrackSelectedItems(Package p) {
     int itemsCount = p.getItems().size();
     int totalCapacity = p.getCapacity();

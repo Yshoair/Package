@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/** Packages fetched from input file are mapped to this model */
 public class Package {
   private final int MAX_CAPACITY = 100;
   private final int MAX_ITEMS_NUMBER = 15;
@@ -32,6 +33,13 @@ public class Package {
     this.capacity = capacity;
   }
 
+  /**
+   * Parse input package txt to model and returns the parsed model
+   *
+   * @param inputPackage as text packageCapacity: (itemIndex, weight, cost)
+   * @return Parsed Package model
+   * @throws APIException
+   */
   public Package parse(String inputPackage) throws APIException {
     capacity = Integer.parseInt(inputPackage.substring(0, inputPackage.indexOf(":")).trim());
     items = new ArrayList<>();
@@ -45,6 +53,11 @@ public class Package {
     return this;
   }
 
+  /**
+   * Validates Package fixed constraints values against parsed values
+   *
+   * @throws APIException
+   */
   private void validateConstraints() throws APIException {
     if (capacity > MAX_CAPACITY)
       throw new APIException("Input package capacity shouldn't exceed: " + MAX_CAPACITY);

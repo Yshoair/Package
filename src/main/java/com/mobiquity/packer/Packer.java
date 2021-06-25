@@ -20,12 +20,23 @@ public class Packer {
     packContext = new PackContext();
   }
 
-  private static synchronized void getPackerInstance() {
+  /**
+   * Insures Single instance of packer whenever pack is called synchronized for multi-thread safety
+   */
+  private static synchronized void setPackerInstance() {
     if (packer == null) packer = new Packer();
   }
 
+  /**
+   * fetches packages from file and sets the packing strategy executes it and returns the packed
+   * items
+   *
+   * @param filePath Absolute path to fetch package data
+   * @return String representing the selected data with highest cost lowest weight to be packed
+   * @throws APIException
+   */
   public static String pack(String filePath) throws APIException {
-    getPackerInstance();
+    setPackerInstance();
     List<Package> packages = packer.packageReader.fetchPackagesFromFile(filePath);
     packer.packContext.setPackStrategy(new DynamicProgrammingBottomUpPackStrategy());
     packages.forEach(p -> packer.packContext.executePackStrategy(p));
